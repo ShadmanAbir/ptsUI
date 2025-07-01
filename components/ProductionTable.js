@@ -1,4 +1,5 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
+import styles from './ProductionTable.styles';
 
 export default function ProductionTable({ data, hours }) {
   const hourlyTotals = hours.map((_, i) =>
@@ -42,13 +43,3 @@ export default function ProductionTable({ data, hours }) {
   );
 }
 
-const styles = StyleSheet.create({
-  rowHeader: { flexDirection: 'row', backgroundColor: '#007AFF' },
-  row: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#ddd' },
-  evenRow: { backgroundColor: '#fff' },
-  oddRow: { backgroundColor: '#f1f1f1' },
-  totalRow: { backgroundColor: '#d1ecf1' },
-  cell: { minWidth: 80, paddingVertical: 6, paddingHorizontal: 4, textAlign: 'center' },
-  headerCell: { color: '#fff', fontWeight: 'bold' },
-  bold: { fontWeight: 'bold' },
-});

@@ -1,6 +1,7 @@
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import styles from './CustomDropDown.styles';
 
 export default function CustomDropdown({ options, selected, onSelect, placeholder }) {
   const [hasSelected, setHasSelected] = useState(!!selected);
@@ -33,32 +34,3 @@ export default function CustomDropdown({ options, selected, onSelect, placeholde
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: 12,
-    marginVertical: 8,
-  },
-  label: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 4,
-    marginLeft: 4,
-  },
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: '#007AFF',
-    borderRadius: 10,
-    overflow: 'hidden',
-    backgroundColor: '#fff',
-    ...Platform.select({
-      android: {
-        paddingHorizontal: 10,
-      },
-    }),
-  },
-  picker: {
-    height: 50,
-    color: '#007AFF',
-  },
-});
