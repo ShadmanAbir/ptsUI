@@ -33,8 +33,11 @@ function RootLayoutNav() {
   const { isLoggedIn, loading } = useAuth();
 
   if (loading) {
+    console.log('RootLayoutNav: Loading...');
     return null; // Or a loading spinner
   }
+
+  console.log('RootLayoutNav: isLoggedIn =', isLoggedIn);
 
   return (
     <Stack>
