@@ -16,11 +16,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const clearStorage = async () => {
-      await AsyncStorage.removeItem('isLoggedIn');
-    };
-    clearStorage();
-
     const checkLoginStatus = async () => {
       try {
         const storedLoginStatus = await AsyncStorage.getItem('isLoggedIn');
