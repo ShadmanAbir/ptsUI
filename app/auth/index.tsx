@@ -2,7 +2,7 @@ import { useAuth } from '@/app/AuthContext';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Image, TextInput, TouchableOpacity } from 'react-native';
 import styles from './styles';
 
@@ -21,6 +21,10 @@ export default function LoginScreen() {
       Alert.alert('Login Failed', 'Invalid username or password');
     }
   };
+
+  useEffect(() => {
+    router.replace('/(app)');
+  }, [router]);
 
   return (
     <ThemedView style={styles.container}>
