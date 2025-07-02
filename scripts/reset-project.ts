@@ -6,9 +6,9 @@
  * You can remove the `reset-project` script from package.json and safely delete this file after running it.
  */
 
-const fs = require("fs");
-const path = require("path");
-const readline = require("readline");
+import * as fs from "fs";
+import * as path from "path";
+import * as readline from "readline";
 
 const root = process.cwd();
 const oldDirs = ["app", "components", "hooks", "constants", "scripts"];
@@ -45,7 +45,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-const moveDirectories = async (userInput) => {
+const moveDirectories = async (userInput: string) => {
   try {
     if (userInput === "y") {
       // Create the app-example directory
@@ -65,8 +65,6 @@ const moveDirectories = async (userInput) => {
           await fs.promises.rm(oldDirPath, { recursive: true, force: true });
           console.log(`❌ /${dir} deleted.`);
         }
-      } else {
-        console.log(`➡️ /${dir} does not exist, skipping.`);
       }
     }
 
@@ -87,26 +85,19 @@ const moveDirectories = async (userInput) => {
 
     console.log("\n✅ Project reset complete. Next steps:");
     console.log(
-      `1. Run \`npx expo start\` to start a development server.\n2. Edit app/index.tsx to edit the main screen.${
-        userInput === "y"
-          ? `\n3. Delete the /${exampleDir} directory when you're done referencing it.`
-          : ""
-      }`
+      `1. Run \`npx expo start\` to start a development server.\n2. Edit app/index.tsx to edit the main screen.${userInput === "y" ? `\n3. Delete the /${exampleDir} directory when you're done referencing it.` : ""}`
     );
-  } catch (error) {
-    console.error(`❌ Error during script execution: ${error.message}`);
+  } catch (error: unknown) {
+    console.error(`❌ Error during script execution: ${(error as Error).message}`);
   }
 };
 
 rl.question(
   "Do you want to move existing files to /app-example instead of deleting them? (Y/n): ",
-  (answer) => {
+  (answer: string) => {
     const userInput = answer.trim().toLowerCase() || "y";
     if (userInput === "y" || userInput === "n") {
       moveDirectories(userInput).finally(() => rl.close());
-    } else {
-      console.log("❌ Invalid input. Please enter 'Y' or 'N'.");
-      rl.close();
     }
   }
 );

@@ -3,10 +3,17 @@ import { useState } from 'react';
 import { Text, View } from 'react-native';
 import styles from './CustomDropDown.styles';
 
-export default function CustomDropdown({ options, selected, onSelect, placeholder }) {
+interface CustomDropdownProps {
+  options: string[];
+  selected: string;
+  onSelect: (value: string) => void;
+  placeholder: string;
+}
+
+export default function CustomDropdown({ options, selected, onSelect, placeholder }: CustomDropdownProps) {
   const [hasSelected, setHasSelected] = useState(!!selected);
 
-  const handleChange = (value) => {
+  const handleChange = (value: string) => {
     if (value !== '__placeholder__') {
       setHasSelected(true);
       onSelect(value);
@@ -26,7 +33,7 @@ export default function CustomDropdown({ options, selected, onSelect, placeholde
           {!hasSelected && (
             <Picker.Item label="-- Select --" value="__placeholder__" enabled={false} />
           )}
-          {options.map((option, idx) => (
+          {options.map((option: string, idx: number) => (
             <Picker.Item key={idx} label={option} value={option} />
           ))}
         </Picker>

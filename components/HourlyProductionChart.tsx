@@ -4,7 +4,12 @@ import styles from './HourlyProductionChart.styles';
 
 const screenWidth = Dimensions.get('window').width;
 
-export default function HourlyProductionChart({ labels, data }) {
+interface HourlyProductionChartProps {
+  labels: string[];
+  data: number[];
+}
+
+export default function HourlyProductionChart({ labels, data }: HourlyProductionChartProps) {
   // Set chart width to at least screen width or wider if many bars
   const barWidth = 60; 
   const chartWidth = Math.max(screenWidth, labels.length * barWidth);
@@ -24,6 +29,7 @@ export default function HourlyProductionChart({ labels, data }) {
           width={chartWidth}
           height={260}
           yAxisLabel=""
+          yAxisSuffix=""
           chartConfig={{
             backgroundColor: '#fff',
             backgroundGradientFrom: '#ffffff',
@@ -42,4 +48,3 @@ export default function HourlyProductionChart({ labels, data }) {
     </View>
   );
 }
-
