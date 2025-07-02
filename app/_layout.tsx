@@ -31,17 +31,6 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isLoggedIn, loading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading) {
-      if (isLoggedIn) {
-        router.replace('/(app)');
-      } else {
-        router.replace('/(auth)');
-      }
-    }
-  }, [isLoggedIn, loading]);
 
   if (loading) {
     return null; // Or a loading spinner
@@ -49,8 +38,11 @@ function RootLayoutNav() {
 
   return (
     <Stack>
-      <Stack.Screen name="(app)" options={{ headerShown: false }} />
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      {isLoggedIn ? (
+        <Stack.Screen name="(app)" options={{ headerShown: false }} />
+      ) : (
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      )}
       <Stack.Screen name="+not-found" />
     </Stack>
   );
