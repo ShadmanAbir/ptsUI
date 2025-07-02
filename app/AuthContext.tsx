@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface AuthContextType {
   isLoggedIn: boolean;
-  login: () => void;
+  userToken: string | null;
+  login: (token: string) => void;
   logout: () => void;
   loading: boolean;
 }
@@ -12,47 +13,44 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userToken, setUserToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkLoginStatus = async () => {
+    const restoreSession = async () => {
       try {
-        const storedLoginStatus = await AsyncStorage.getItem('isLoggedIn');
-        if (storedLoginStatus === 'true') {
-          setIsLoggedIn(true);
-        }
-      } catch (error) {
-        console.error('Failed to load login status from AsyncStorage', error);
+        const token = await AsyncStorage.getItem('userToken');
+        if (token) setUserToken(token);
+      } catch (e) {
+        console.error('Failed to restore session', e);
       } finally {
         setLoading(false);
       }
     };
-
-    checkLoginStatus();
+    restoreSession();
   }, []);
 
-  const login = async () => {
+  const login = async (token: string) => {
     try {
-      await AsyncStorage.setItem('isLoggedIn', 'true');
-      setIsLoggedIn(true);
-    } catch (error) {
-      console.error('Failed to save login status to AsyncStorage', error);
+      await AsyncStorage.setItem('userToken', token);
+      setUserToken(token);
+    } catch (e) {
+      console.error('Failed to save session', e);
     }
   };
 
   const logout = async () => {
     try {
-      await AsyncStorage.removeItem('isLoggedIn');
-      setIsLoggedIn(false);
+      await AsyncStorage.removeItem('userToken');
+      setUserToken(null);
       router.replace('/(auth)');
-    } catch (error) {
-      console.error('Failed to remove login status from AsyncStorage', error);
+    } catch (e) {
+      console.error('Failed to remove session', e);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout, loading }}>
+    <AuthContext.Provider value={{ isLoggedIn: !!userToken, userToken, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

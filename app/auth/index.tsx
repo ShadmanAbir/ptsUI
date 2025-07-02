@@ -1,10 +1,10 @@
-import { Image, TextInput, TouchableOpacity, Alert } from 'react-native';
-import React, { useState } from 'react';
+import { useAuth } from '@/app/AuthContext';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import styles from './styles';
-import { useAuth } from '@/app/AuthContext';
 import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { Alert, Image, TextInput, TouchableOpacity } from 'react-native';
+import styles from './styles';
 
 export default function LoginScreen() {
   const { login } = useAuth();
@@ -14,8 +14,9 @@ export default function LoginScreen() {
 
   const handleLogin = () => {
     if (username === 'admin' && password === '12345') {
-      login();
-      router.replace('/(app)');
+      // Use a fake token for demo
+      login('demo-token');
+      // Remove router.replace('/(app)'); let context handle navigation
     } else {
       Alert.alert('Login Failed', 'Invalid username or password');
     }
