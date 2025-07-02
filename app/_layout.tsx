@@ -38,7 +38,7 @@ function RootLayoutNav() {
       if (isLoggedIn) {
         router.replace('/(app)');
       } else {
-        router.replace('/(auth)');
+        router.replace('/(auth)/login');
       }
     }
   }, [isLoggedIn, loading]);
