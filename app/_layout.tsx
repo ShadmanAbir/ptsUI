@@ -1,8 +1,9 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
+import { useEffect } from 'react';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { AuthProvider, useAuth } from './AuthContext';
@@ -30,15 +31,20 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isLoggedIn } = useAuth();
-  console.log('isLoggedIn:', isLoggedIn);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.replace('/(app)');
+    } else {
+      router.replace('/(auth)');
+    }
+  }, [isLoggedIn]);
 
   return (
     <Stack>
-      {isLoggedIn ? (
-        <Stack.Screen name="(app)" options={{ headerShown: false }} />
-      ) : (
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      )}
+      <Stack.Screen name="(app)" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="+not-found" />
     </Stack>
   );
