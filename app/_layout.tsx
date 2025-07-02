@@ -20,12 +20,8 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        {/* TODO: Replace with actual authentication logic (e.g., from a context or hook) */}
-        {false ? ( // Temporarily set to false to force login page
-          <Stack.Screen name="(app)" options={{ headerShown: false }} />
-        ) : (
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        )}
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(app)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
