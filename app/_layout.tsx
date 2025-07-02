@@ -31,21 +31,12 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isLoggedIn } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      router.replace('/(app)');
-    } else {
-      router.replace('/(auth)');
-    }
-  }, [isLoggedIn]);
 
   return (
     <Stack>
-      <Stack.Screen name="(app)" options={{ headerShown: false }} />
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Screen name="+not-found" />
-    </Stack>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(app)" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
   );
 }
