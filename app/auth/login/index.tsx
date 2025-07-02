@@ -4,15 +4,18 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import styles from './styles';
 import { useAuth } from '@/app/AuthContext';
+import { useRouter } from 'expo-router';
 
 export default function LoginScreen() {
   const { login } = useAuth();
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
     if (username === 'admin' && password === '12345') {
       login();
+      router.replace('/(app)');
     } else {
       Alert.alert('Login Failed', 'Invalid username or password');
     }

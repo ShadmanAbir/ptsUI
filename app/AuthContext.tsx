@@ -21,7 +21,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = () => {
     setIsLoggedIn(true);
-    router.replace('/(app)'); // Navigate to the app after login
   };
 
   const logout = () => {

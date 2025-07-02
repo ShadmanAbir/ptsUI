@@ -30,6 +30,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isLoggedIn } = useAuth();
+  console.log('isLoggedIn:', isLoggedIn);
 
   return (
     <Stack>
