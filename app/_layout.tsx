@@ -31,6 +31,17 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isLoggedIn, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading) {
+      if (isLoggedIn) {
+        router.replace('/(app)');
+      } else {
+        router.replace('/(auth)');
+      }
+    }
+  }, [isLoggedIn, loading, router]);
 
   if (loading) {
     console.log('RootLayoutNav: Loading...');
@@ -41,11 +52,8 @@ function RootLayoutNav() {
 
   return (
     <Stack>
-      {isLoggedIn ? (
-        <Stack.Screen name="(app)" options={{ headerShown: false }} />
-      ) : (
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      )}
+      <Stack.Screen name="(app)" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="+not-found" />
     </Stack>
   );
