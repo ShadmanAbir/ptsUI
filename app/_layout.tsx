@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { AuthProvider, useAuth } from './AuthContext';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -19,12 +20,25 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(app)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
+      <AuthProvider>
+        <RootLayoutNav />
+      </AuthProvider>
       <StatusBar style="auto" />
     </ThemeProvider>
+  );
+}
+
+function RootLayoutNav() {
+  const { isLoggedIn } = useAuth();
+
+  return (
+    <Stack>
+      {isLoggedIn ? (
+        <Stack.Screen name="(app)" options={{ headerShown: false }} />
+      ) : (
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      )}
+      <Stack.Screen name="+not-found" />
+    </Stack>
   );
 }
