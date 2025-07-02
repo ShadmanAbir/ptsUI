@@ -1,9 +1,8 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack, useRouter } from 'expo-router';
+import { Stack, Tabs } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
-import { useEffect } from 'react';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { AuthProvider, useAuth } from './AuthContext';
@@ -15,7 +14,6 @@ export default function RootLayout() {
   });
 
   if (!loaded) {
-    // Async font loading only occurs in development.
     return null;
   }
 
@@ -31,30 +29,23 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isLoggedIn, loading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading) {
-      if (isLoggedIn) {
-        router.replace('/(app)');
-      } else {
-        router.replace('/(auth)');
-      }
-    }
-  }, [isLoggedIn, loading, router]);
 
   if (loading) {
-    console.log('RootLayoutNav: Loading...');
-    return null; // Or a loading spinner
+    return null;
   }
 
-  console.log('RootLayoutNav: isLoggedIn =', isLoggedIn);
+  if (!isLoggedIn) {
+    return (
+      <Stack>
+        <Stack.Screen name="auth/index" options={{ headerShown: false }} />
+      </Stack>
+    );
+  }
 
   return (
-    <Stack>
-      <Stack.Screen name="(app)" options={{ headerShown: false }} />
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Screen name="+not-found" />
-    </Stack>
+    <Tabs>
+      <Tabs.Screen name="index" options={{ title: 'Home', headerShown: false }} />
+      <Tabs.Screen name="explore" options={{ title: 'Explore', headerShown: false }} />
+    </Tabs>
   );
 }

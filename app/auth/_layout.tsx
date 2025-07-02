@@ -1,9 +1,1 @@
-import { Stack } from 'expo-router';
-
-export default function AuthLayout() {
-  return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-    </Stack>
-  );
-}
+// This file is now obsolete. Auth stack is handled in app/_layout.tsx.
