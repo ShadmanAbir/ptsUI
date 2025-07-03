@@ -1,11 +1,14 @@
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack, Tabs } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { AuthProvider, useAuth } from './AuthContext';
+import { AuthProvider } from './AuthContext';
+import RootLayoutNav from './RootLayoutNav'; // we'll create this next
+
+const Drawer = createDrawerNavigator();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -24,28 +27,5 @@ export default function RootLayout() {
       </AuthProvider>
       <StatusBar style="auto" />
     </ThemeProvider>
-  );
-}
-
-function RootLayoutNav() {
-  const { isLoggedIn, loading } = useAuth();
-
-  if (loading) {
-    return null;
-  }
-
-  if (!isLoggedIn) {
-    return (
-      <Stack>
-        <Stack.Screen name="auth/index" options={{ headerShown: false }} />
-      </Stack>
-    );
-  }
-
-  return (
-    <Tabs>
-      <Tabs.Screen name="index" options={{ title: 'Home', headerShown: false }} />
-      <Tabs.Screen name="explore" options={{ title: 'Explore', headerShown: false }} />
-    </Tabs>
   );
 }
