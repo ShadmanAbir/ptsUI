@@ -15,7 +15,7 @@ export default function LoginScreen() {
   const handleLogin = () => {
     if (username === 'admin' && password === '12345') {
       login('demo-token');       // Save token and update context
-      router.replace({ pathname: '/index' });        // Redirect to dashboard (home)
+      router.replace({ pathname: '/' });        // Redirect to dashboard (home)
     } else {
       Alert.alert('Login Failed', 'Invalid username or password');
     }

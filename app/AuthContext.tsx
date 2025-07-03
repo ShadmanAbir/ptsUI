@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await AsyncStorage.removeItem('userToken');
       setUserToken(null);
-      router.replace({ pathname: '/index' });
+      router.replace('/auth'); // ✅ fixed
     } catch (e) {
       console.error('Failed to remove session', e);
     }
