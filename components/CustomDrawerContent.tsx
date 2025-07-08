@@ -1,35 +1,45 @@
 import { useAuth } from '@/app/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-} from '@react-navigation/drawer';
+
+import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { drawerItems } from '../constants/DrawerItem';
+  // const user = {
+  //   name: 'Shadman Sakib',
+  //   email: 'shadman@example.com',
+  //   image: 'https://i.pravatar.cc/150?img=12',
+  // };
+  const CustomDrawerContent = (props: any) => {
+  const { logout, permissions,user } = useAuth();
+  
 
-const CustomDrawerContent = (props: any) => {
-  const { logout } = useAuth();
-
-  const user = {
-    name: 'Shadman Sakib',
-    email: 'shadman@example.com',
-    image: 'https://i.pravatar.cc/150?img=12',
-  };
+  // Filter items by permission (if no requiredPermissions, show always)
+  const filteredItems = drawerItems.filter(item =>
+    !item.requiredPermissions ||
+    item.requiredPermissions.every(p => permissions.includes(p))
+  );
 
   return (
     <View style={{ flex: 1 }}>
-      <DrawerContentScrollView
-        {...props}
-        contentContainerStyle={{ flexGrow: 1 }}
-      >
-        <View style={styles.profileSection}>
-          <Image source={{ uri: user.image }} style={styles.avatar} />
-          <Text style={styles.name}>{user.name}</Text>
-          <Text style={styles.email}>{user.email}</Text>
-        </View>
+      <DrawerContentScrollView {...props} contentContainerStyle={{ flexGrow: 1 }}>
 
+<View style={styles.profileSection}>
+  <Image source={{ uri:/* user?.avatarUrl ||*/ 'https://i.pravatar.cc/150?img=12' }} style={styles.avatar} />
+  <Text style={styles.name}>{user?.fullName || 'Guest'}</Text>
+  {/* <Text style={styles.email}>{user?.email || 'guest@example.com'}</Text> */}
+</View>
         <View style={styles.divider} />
-        <DrawerItemList {...props} />
+
+        {/* Render filtered drawer items */}
+{filteredItems.map(({ label, iconName, route }) => (
+  <DrawerItem
+    key={route}
+    label={label}
+    icon={({ color, size }) => <Ionicons name={iconName as any} size={size} color={color} />}
+    onPress={() => props.navigation.navigate(route)}
+  />
+))}
       </DrawerContentScrollView>
 
       <TouchableOpacity style={styles.logoutSection} onPress={logout}>
