@@ -3,7 +3,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Image, TextInput, TouchableOpacity, View } from 'react-native';
-import { API_BASE_URL } from '../../constants/Api';
+import { apiFetch } from '../../constants/Api';
 import styles from './styles';
 
 export default function LoginScreen() {
@@ -19,27 +19,20 @@ const handleLogin = async () => {
     return;
   }
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
+try {
+  const data = await apiFetch('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ username, password }),
+  });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Login failed');
-    }
+  // ✅ Updated to include refreshToken
+  login(data.token, data.refreshToken, data.user, data.permissions);
 
-    const data = await response.json();
+  router.replace('/');
+} catch (error: any) {
+  Alert.alert('Login Failed', error.message);
+}
 
-    // ✅ Updated to include refreshToken
-    login(data.token, data.refreshToken, data.user, data.permissions);
-
-    router.replace('/');
-  } catch (error: any) {
-    Alert.alert('Login Failed', error.message);
-  }
 };
 
   return (
