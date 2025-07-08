@@ -1,3 +1,4 @@
+// /app/(drawer)/_layout.tsx
 import CustomDrawerContent from '@/components/CustomDrawerContent';
 import { Drawer } from 'expo-router/drawer';
 

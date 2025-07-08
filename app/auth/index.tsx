@@ -3,6 +3,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Image, TextInput, TouchableOpacity, View } from 'react-native';
+import { API_BASE_URL } from '../../constants/Api';
 import styles from './styles';
 
 export default function LoginScreen() {
@@ -12,14 +13,34 @@ export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    if (username === 'admin' && password === '12345') {
-      login('demo-token');       // Save token and update context
-      router.replace({ pathname: '/' });        // Redirect to dashboard (home)
-    } else {
-      Alert.alert('Login Failed', 'Invalid username or password');
+const handleLogin = async () => {
+  if (!username || !password) {
+    Alert.alert('Validation Error', 'Please enter both username and password');
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Login failed');
     }
-  };
+
+    const data = await response.json();
+
+    // ✅ Updated to include refreshToken
+    login(data.token, data.refreshToken, data.user, data.permissions);
+
+    router.replace('/');
+  } catch (error: any) {
+    Alert.alert('Login Failed', error.message);
+  }
+};
 
   return (
     <View style={styles.container}>
