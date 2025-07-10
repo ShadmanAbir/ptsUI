@@ -5,11 +5,6 @@ import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { drawerItems } from '../constants/DrawerItem';
-  // const user = {
-  //   name: 'Shadman Sakib',
-  //   email: 'shadman@example.com',
-  //   image: 'https://i.pravatar.cc/150?img=12',
-  // };
   const CustomDrawerContent = (props: any) => {
   const { logout, permissions,user } = useAuth();
   
@@ -25,9 +20,9 @@ import { drawerItems } from '../constants/DrawerItem';
       <DrawerContentScrollView {...props} contentContainerStyle={{ flexGrow: 1 }}>
 
 <View style={styles.profileSection}>
-  <Image source={{ uri:/* user?.avatarUrl ||*/ 'https://i.pravatar.cc/150?img=12' }} style={styles.avatar} />
+  <Image source={{ uri: user?.avatarUrl }} style={styles.avatar} />
   <Text style={styles.name}>{user?.fullName || 'Guest'}</Text>
-  {/* <Text style={styles.email}>{user?.email || 'guest@example.com'}</Text> */}
+  <Text style={styles.email}>{user?.email || 'guest@example.com'}</Text>
 </View>
         <View style={styles.divider} />
 

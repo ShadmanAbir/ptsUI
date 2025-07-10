@@ -7,14 +7,20 @@ interface AuthContextType {
   isLoggedIn: boolean;
   userToken: string | null;
   refreshToken: string | null;
-  user: { id: number; username: string; fullName: string } | null;
+  user: { id: number; username: string; fullName: string; email: string; avatarUrl: string; } | null;
   permissions: string[];
-  login: (
-    token: string,
-    refreshToken: string,
-    user: { id: number; username: string; fullName: string },
-    permissions: string[]
-  ) => void;
+login: (
+  token: string,
+  refreshToken: string,
+  user: {
+    id: number;
+    username: string;
+    fullName: string;
+    email: string;
+    avatarUrl: string;
+  },
+  permissions: string[]
+) => void;
   logout: () => void;
   loading: boolean;
 }
@@ -26,7 +32,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [userToken, setUserToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
-  const [user, setUser] = useState<{ id: number; username: string; fullName: string } | null>(null);
+  const [user, setUser] = useState<{id: number;username: string;fullName: string;email: string;avatarUrl: string;} | null>(null);
   const [permissions, setPermissions] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -59,7 +65,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (
     token: string,
     refreshToken: string,
-    userObj: { id: number; username: string; fullName: string },
+      userObj: {
+    id: number;
+    username: string;
+    fullName: string;
+    email: string;
+    avatarUrl: string;
+  },
     perms: string[]
   ) => {
     try {
