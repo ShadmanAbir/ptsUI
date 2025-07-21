@@ -8,9 +8,10 @@ interface CustomDropdownProps {
   selected: string;
   onSelect: (value: string) => void;
   placeholder: string;
+  disabled?: boolean;
 }
 
-export default function CustomDropdown({ options, selected, onSelect, placeholder }: CustomDropdownProps) {
+export default function CustomDropdown({ options, selected, onSelect, placeholder, disabled = false }: CustomDropdownProps) {
   const [hasSelected, setHasSelected] = useState(!!selected);
 
   const handleChange = (value: string) => {
@@ -29,6 +30,7 @@ export default function CustomDropdown({ options, selected, onSelect, placeholde
           onValueChange={handleChange}
           style={styles.picker}
           dropdownIconColor="#007AFF"
+          enabled={!disabled}
         >
           {!hasSelected && (
             <Picker.Item label="-- Select --" value="__placeholder__" enabled={false} />

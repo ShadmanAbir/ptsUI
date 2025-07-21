@@ -6,8 +6,11 @@ export type DrawerItem = {
 };
 
 export const drawerItems: DrawerItem[] = [
-  { label: 'Dashboard', iconName: 'speedometer-outline', route: 'Dashboard' },
-  { label: 'Production Entry', iconName: 'create-outline', route: 'ProductionEntry', requiredPermissions: ['ProductionEntry'] },
-  { label: 'Reports', iconName: 'stats-chart-outline', route: 'Reports', requiredPermissions: ['ProductionDashboardView'] },
-  { label: 'Settings', iconName: 'settings-outline', route: 'Settings'},
+  { label: 'Dashboard', iconName: 'speedometer-outline', route: 'index' },
+  { label: 'Production Entry', iconName: 'create-outline', route: 'productionentry', requiredPermissions: ['ProductionEntry'] },
+  { label: 'Line Setup', iconName: 'options-outline', route: 'LineSetup', requiredPermissions: ['LineSetup'] },
+  { label: 'Orders', iconName: 'list-outline', route: 'Orders', requiredPermissions: ['OrdersView'] },
+  { label: 'Quality Control', iconName: 'shield-checkmark-outline', route: 'QualityControl', requiredPermissions: ['QualityControl'] },
+  { label: 'Reports', iconName: 'stats-chart-outline', route: 'reports', requiredPermissions: ['ProductionDashboardView'] },
+  { label: 'Settings', iconName: 'settings-outline', route: 'settings'},
 ];

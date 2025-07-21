@@ -1,9 +1,11 @@
 // /app/_layout.tsx
 import { useColorScheme } from '@/hooks/useColorScheme';
+import SyncManager from '@/utils/SyncManager';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import { AuthProvider, useAuth } from './AuthContext';
 
 export default function AppLayout() {
@@ -11,6 +13,15 @@ export default function AppLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
+  
+  // Initialize sync manager
+  useEffect(() => {
+    SyncManager.startBackgroundSync();
+    
+    return () => {
+      SyncManager.stopBackgroundSync();
+    };
+  }, []);
 
   if (!loaded) return null;
 

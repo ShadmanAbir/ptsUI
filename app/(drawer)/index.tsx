@@ -1,85 +1,114 @@
-import { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Alert, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
 import CustomDropDown from '@/components/CustomDropDown';
 import HourlyProductionChart from '@/components/HourlyProductionChart';
 import ProductionTable from '@/components/ProductionTable';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import ProductionService from '@/services/ProductionService';
+import { Buyer, DashboardMetrics, ProductionLine } from '@/types/production';
 
-const lines = ['All Lines', 'Line 1', 'Line 2', 'Line 3'];
-const buyers = ['All Buyers', 'Buyer A', 'Buyer B', 'Buyer C'];
 const hours = ['9-10', '10-11', '11-12', '12-1', '1-2', '2-3', '3-4', '4-5'];
-const productionData = [
-  {
-    line: 'Line 1',
-    buyer: 'Buyer A',
-    orderNo: 'ORD001',
-    color: 'Red',
-    qty: 100,
-    target: 120,
-    hourly: [10, 15, 20, 25, 30, 0, 0, 0],
-  },
-  {
-    line: 'Line 2',
-    buyer: 'Buyer B',
-    orderNo: 'ORD002',
-    color: 'Blue',
-    qty: 150,
-    target: 180,
-    hourly: [12, 18, 22, 28, 35, 0, 0, 0],
-  },
-  {
-    line: 'Line 3',
-    buyer: 'Buyer C',
-    orderNo: 'ORD003',
-    color: 'Green',
-    qty: 200,
-    target: 210,
-    hourly: [20, 25, 30, 35, 40, 0, 0, 0],
-  },
-];
 
 export default function Dashboard() {
   const [selectedLine, setSelectedLine] = useState('All Lines');
   const [selectedBuyer, setSelectedBuyer] = useState('All Buyers');
+  const [lines, setLines] = useState<ProductionLine[]>([]);
+  const [buyers, setBuyers] = useState<Buyer[]>([]);
+  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [chartData, setChartData] = useState<number[]>(new Array(8).fill(0));
 
-  // Filter data based on dropdowns
-  const filteredData = productionData.filter(row =>
-    (selectedLine === 'All Lines' || row.line === selectedLine) &&
-    (selectedBuyer === 'All Buyers' || row.buyer === selectedBuyer)
-  );
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
 
-  // Chart data: sum hourly for filtered rows
-  const chartData = hours.map((_, i) =>
-    filteredData.reduce((sum, row) => sum + (row.hourly[i] || 0), 0)
-  );
+  const loadDashboardData = async () => {
+    try {
+      const [linesData, buyersData, metricsData] = await Promise.all([
+        ProductionService.getProductionLines(),
+        ProductionService.getBuyers(),
+        ProductionService.getDashboardMetrics(),
+      ]);
+
+      setLines(linesData);
+      setBuyers(buyersData);
+      setMetrics(metricsData);
+      
+      // Generate sample hourly data for chart
+      const sampleHourlyData = hours.map(() => Math.floor(Math.random() * 50) + 20);
+      setChartData(sampleHourlyData);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to load dashboard data');
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadDashboardData();
+    setRefreshing(false);
+  };
+
+  const lineOptions = ['All Lines', ...lines.map(line => line.name)];
+  const buyerOptions = ['All Buyers', ...buyers.map(buyer => buyer.name)];
 
   return (
     <ThemedView style={dashboardStyles.container}>
       <ThemedText type="title" style={dashboardStyles.heading}>Production Dashboard</ThemedText>
+      
+      {/* Key Metrics Cards */}
+      {metrics && (
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          style={dashboardStyles.metricsContainer}
+        >
+          <View style={dashboardStyles.metricCard}>
+            <ThemedText style={dashboardStyles.metricValue}>{metrics.todayProduction}</ThemedText>
+            <ThemedText style={dashboardStyles.metricLabel}>Today's Production</ThemedText>
+          </View>
+          <View style={dashboardStyles.metricCard}>
+            <ThemedText style={dashboardStyles.metricValue}>{metrics.overallEfficiency.toFixed(1)}%</ThemedText>
+            <ThemedText style={dashboardStyles.metricLabel}>Efficiency</ThemedText>
+          </View>
+          <View style={dashboardStyles.metricCard}>
+            <ThemedText style={dashboardStyles.metricValue}>{metrics.qualityRate.toFixed(1)}%</ThemedText>
+            <ThemedText style={dashboardStyles.metricLabel}>Quality Rate</ThemedText>
+          </View>
+          <View style={dashboardStyles.metricCard}>
+            <ThemedText style={dashboardStyles.metricValue}>{metrics.activeLines}/{metrics.totalLines}</ThemedText>
+            <ThemedText style={dashboardStyles.metricLabel}>Active Lines</ThemedText>
+          </View>
+        </ScrollView>
+      )}
+
       <View style={dashboardStyles.filters}>
         <CustomDropDown
-          options={lines}
+          options={lineOptions}
           selected={selectedLine}
           onSelect={setSelectedLine}
           placeholder="Select Line"
         />
         <CustomDropDown
-          options={buyers}
+          options={buyerOptions}
           selected={selectedBuyer}
           onSelect={setSelectedBuyer}
           placeholder="Select Buyer"
         />
       </View>
-      <ScrollView contentContainerStyle={dashboardStyles.scrollContent}>
+      
+      <ScrollView 
+        contentContainerStyle={dashboardStyles.scrollContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
         <View style={dashboardStyles.chartCard}>
           <ThemedText type="subtitle" style={dashboardStyles.chartTitle}>Hourly Production</ThemedText>
           <HourlyProductionChart labels={hours} data={chartData} />
         </View>
         <View style={dashboardStyles.tableCard}>
-          <ThemedText type="subtitle" style={dashboardStyles.tableTitle}>Production Table</ThemedText>
-          <ProductionTable data={filteredData} hours={hours} />
+          <ThemedText type="subtitle" style={dashboardStyles.tableTitle}>Production Summary</ThemedText>
+          <ProductionTable />
         </View>
       </ScrollView>
     </ThemedView>
@@ -109,6 +138,33 @@ const dashboardStyles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 32,
+  },
+  metricsContainer: {
+    flexDirection: 'row',
+    marginHorizontal: 12,
+    marginBottom: 16,
+  },
+  metricCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginRight: 12,
+    width: 150,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  metricValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#007AFF',
+    marginBottom: 4,
+  },
+  metricLabel: {
+    fontSize: 14,
+    color: '#666',
   },
   chartCard: {
     backgroundColor: '#fff',
