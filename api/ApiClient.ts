@@ -3,6 +3,7 @@ import {
     Buyer,
     HourlyProduction,
     LineSetup,
+    ProductionEntry,
     ProductionLine,
     ProductionOrder,
     ProductionSummary,
@@ -71,6 +72,15 @@ class ApiClient {
       body: JSON.stringify(order),
     });
     return response.data;
+  }
+
+  // Production Entry
+  async submitProductionEntry(entry: ProductionEntry): Promise<any> {
+    const response = await apiFetch('/Production', {
+      method: 'POST',
+      body: JSON.stringify(entry),
+    });
+    return response;
   }
 
   // Line Setup

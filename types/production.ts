@@ -60,6 +60,20 @@ export interface HourlyProduction {
   enteredBy: number;
 }
 
+export interface ProductionEntry {
+  lineId: number;
+  productionDate: string;
+  style: string;
+  orderNo: string;
+  buyer: string;
+  fabricType: string;
+  pmId: number;
+  hourSlot: string;
+  targetQuantity: number;
+  actualQuantity: number;
+  remarks: string;
+}
+
 export interface QualityDefect {
   id: number;
   hourlyProductionId: number;
