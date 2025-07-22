@@ -2,25 +2,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
+import { User } from '@/types/production';
+
 // Types for AuthContext
 interface AuthContextType {
   isLoggedIn: boolean;
   userToken: string | null;
   refreshToken: string | null;
-  user: { id: number; username: string; fullName: string; email: string; avatarUrl: string; } | null;
+  user: User | null;
   permissions: string[];
-login: (
-  token: string,
-  refreshToken: string,
-  user: {
-    id: number;
-    username: string;
-    fullName: string;
-    email: string;
-    avatarUrl: string;
-  },
-  permissions: string[]
-) => void;
+  login: (
+    token: string,
+    refreshToken: string,
+    user: User,
+    permissions: string[]
+  ) => void;
   logout: () => void;
   loading: boolean;
 }
@@ -32,7 +28,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [userToken, setUserToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
-  const [user, setUser] = useState<{id: number;username: string;fullName: string;email: string;avatarUrl: string;} | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [permissions, setPermissions] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -65,13 +61,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (
     token: string,
     refreshToken: string,
-      userObj: {
-    id: number;
-    username: string;
-    fullName: string;
-    email: string;
-    avatarUrl: string;
-  },
+    userObj: User,
     perms: string[]
   ) => {
     try {

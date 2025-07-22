@@ -60,6 +60,31 @@ export interface HourlyProduction {
   enteredBy: number;
 }
 
+export interface DailyLineSetup {
+  id?: number;
+  lineId: number;
+  userId: number;
+  productionDate: string;
+  style: string;
+  orderNo: string;
+  buyer: string;
+  fabricType: string;
+  pmId: number;
+  isActive: boolean;
+  createdAt?: string;
+}
+
+export interface HourlyEntry {
+  id?: number;
+  dailyLineSetupId: number;
+  hourSlot: string;
+  targetQuantity: number;
+  actualQuantity: number;
+  remarks?: string;
+  entryTime: string;
+  enteredBy: number;
+}
+
 export interface ProductionEntry {
   lineId: number;
   productionDate: string;
@@ -82,6 +107,18 @@ export interface QualityDefect {
   severity: 'Minor' | 'Major' | 'Critical';
   description?: string;
   actionTaken?: string;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  fullName: string;
+  email: string;
+  avatarUrl: string;
+  role: 'EntryUser' | 'Admin' | 'ViewOnly';
+  assignedLines: number[]; // Array of line IDs assigned to this user
+  isActive: boolean;
+  contactNumber?: string;
 }
 
 export interface Employee {
